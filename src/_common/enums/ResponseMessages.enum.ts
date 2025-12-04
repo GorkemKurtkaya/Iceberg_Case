@@ -1,0 +1,18 @@
+export enum ResponseMessages {
+    SUCCESS = 'Success',
+    ERROR = 'Error',
+    NOT_FOUND = 'Not Found',
+    BAD_REQUEST = 'Bad Request',
+    UNAUTHORIZED = 'Unauthorized Enum',
+    FORBIDDEN = 'Forbidden',
+    INTERNAL_SERVER_ERROR = 'Internal Server Error',
+    CREATED = 'Created',
+    UPDATED = 'Updated',
+    DELETED = 'Deleted',
+    FETCHED = 'Fetched',
+    VALIDATION_ERROR = 'Validation Error',
+    NOT_IMPLEMENTED = 'Not Implemented',
+    BAD_GATEWAY = 'Bad Gateway',
+    SERVICE_UNAVAILABLE = 'Service Unavailable',
+    GATEWAY_TIMEOUT = 'Gateway Timeout',
+}

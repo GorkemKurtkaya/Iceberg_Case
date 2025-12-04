@@ -4,6 +4,8 @@ import { Model, Types } from 'mongoose';
 import { Transaction, TransactionDocument } from './schemas/transaction.schema';
 import { CommissionService } from './services/commission.service';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
+import { getValidationMessage, DtoPrefix, ValidationType } from '../_common/enums/ValidationMessages.enum';
+
 
 const ALLOWED: Record<string, string[]> = {
   agreement: ['earnest_money'],
@@ -20,27 +22,40 @@ export class TransactionsService {
   ) {}
 
   async create(dto: CreateTransactionDto) {
-    const created = new this.txModel({ 
+    const created = new this.txModel({
       propertyId: new Types.ObjectId(dto.propertyId),
       listingAgentId: new Types.ObjectId(dto.listingAgentId),
       sellingAgentId: new Types.ObjectId(dto.sellingAgentId),
       totalServiceFee: dto.totalServiceFee,
-      stage: 'agreement'
+      stage: 'agreement',
     });
     return created.save();
   }
 
   async getById(id: string) {
-    return this.txModel.findById(id).lean();
+    const tx = await this.txModel.findById(id).lean();
+    if (!tx) {
+      throw new BadRequestException('Transaction not found');
+    }
+    return tx;
   }
 
   async updateStage(id: string, newStage: string) {
     const tx = await this.txModel.findById(id);
-    if (!tx) throw new BadRequestException('Transaction not found');
+    if (!tx) {
+      throw new BadRequestException('Transaction not found');
+    }
 
     const allowed = ALLOWED[tx.stage] || [];
     if (!allowed.includes(newStage)) {
-      throw new BadRequestException(`Invalid stage transition from ${tx.stage} to ${newStage}`);
+      throw new BadRequestException(
+        getValidationMessage(
+          DtoPrefix.STAGE,
+          ValidationType.INVALID_STAGE_TRANSITION,
+          tx.stage,
+          newStage,
+        ),
+      );
     }
 
     tx.stage = newStage;

@@ -4,7 +4,7 @@ import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { TransactionsModule } from './transactions/transactions.module';
-
+import { DbKeepAliveService } from './db-keep-alive.service';
 
 @Module({
   imports: [
@@ -15,6 +15,6 @@ import { TransactionsModule } from './transactions/transactions.module';
     MongooseModule.forRoot(process.env.MONGO_URI as string),
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, DbKeepAliveService],
 })
 export class AppModule {}
